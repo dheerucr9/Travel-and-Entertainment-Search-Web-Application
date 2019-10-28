@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <form class="form-horizontal" action="">
+                <div>
+                    <h2 class="text-center">Travel and Entertainment Search</h2>
+                </div>
+                <div class="form-group row">
+                <label class="control-label col-sm-3" for="keyword">Keyword</label>
+               <div class="col-sm-1"></div>
+        <div class="col-sm-6">
+        <input type="text" class="form-control" id="keyword" name="keyword">
+      </div>
+    </div>
+                <div class="form-group row">
+                    <label class="control-label col-sm-3" for="cat">Category</label>
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-6">
+                        <select class="form-control" id="cat">
+                            <option>Default</option>
+                            <option>Airport</option>
+                            <option>Amusement Park</option>
+                            <option>Aquarium</option>
+                            <option>Art Gallery</option>
+                            <option>Bakery</option>
+                            <option>Bar</option>
+                            <option>Beauty Salon</option>
+                            <option>Bowling Alley</option>
+                            <option>Bus Station</option>
+                            <option>Cafe</option>
+                            <option>Campground</option>
+                            <option>Car Rental</option>
+                            <option>Casino</option>
+                            <option>Lodging</option>
+                            <option>Movie Theatre</option>
+                            <option>Museum</option>
+                            <option>Night Club</option>
+                            <option>Park</option>
+                            <option>Parking</option>
+                            <option>Restaurant</option>
+                            <option>Shopping Mall</option>
+                            <option>Stadium</option>
+                            <option>Subway Station</option>
+                            <option>Taxi Stand</option>
+                            <option>Train Station</option>
+                            <option>Transit Station</option>
+                            <option>Travel Agency</option>
+                            <option>Zoo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-sm-3" for="dist">Distance (miles)</label>
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-6">
+                        <input class="form-control" id="dist" type="number" placeholder="10">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="curr">From*</label>
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-6">
+                        <div class="radio">
+                            <label><input id="curr" type="radio">Current location</label>
+                        </div>
+                    </div>  
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8">
+                        <div class="radio">
+                            <label><input type="radio">Other, Please specify:</label>  
+                        </div>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="Enter a location">
+                        </div>
+                    </div>
+                </div>
+                    
+                
+                <div class="form-group">
+                    
+                <div class="form-group row">
+                    <div class="col-sm-3"></div>
+                    <button>Search</button>
+                    <button>Clear</button>
+                </div>
+                </div>  
+            </form>
+        </div>
+        
+        
+        
+    </body>
+
+
+</html>

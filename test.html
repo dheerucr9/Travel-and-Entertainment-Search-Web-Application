@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>layout</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style type="text/css">
+   .container{ background:#f4f5f7  !important;}
+</style>
+</head>
+<body>
+<div class="container">
+  <form class="form-horizontal" action="">
+      <div class="form-group">
+      <div class="col-sm-12"></div> </div>
+   <div class="form-group">
+
+      <div class="col-sm-5">
+
+      </div>
+          <h><b>Travel and Entertainment Search </b></h>
+
+
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-3" for="keyword">Keyword</label>
+               <div class="col-sm-1"></div>
+        <div class="col-sm-6">
+        <input type="text" class="form-control" id="keyword" name="keyword">
+      </div>
+    </div>
+     <div class="form-group">
+      <label class="control-label col-sm-3" >Category</label>
+               <div class="col-sm-1"></div>
+            <div class="col-sm-5">
+        <select class="form-control" name="category" id="category">
+        <option>Default</option>
+        <option>Airport</option>
+        <option>Amusement Park</option>
+        <option>Aquarium</option>
+        <option>Art Gallery</option>
+        <option>Bakery</option>
+        <option>Bar</option>
+        <option>Beauty Salon</option>
+        <option>Bowling Alley</option>
+        <option>Bus Station</option>
+        <option>Cafe</option>
+        <option>Campground</option>
+        <option>Car rental</option>
+        <option>Casino</option>
+        <option>Lodging</option>
+        <option>Movie Theatre</option>
+        <option>Museum</option>
+        <option>Night Club</option>
+        <option>Park</option>
+        <option>Parking</option>
+        <option>Restaurant</option>
+        <option>Shopping Mall</option>
+        <option>Stadium</option>
+        <option>Subway Station</option>
+        <option>Taxi Stand</option>
+        <option>Train Station</option>
+        <option>Transit Station</option>
+        <option>Travel Agency</option>
+        <option>Zoo</option>
+      </select>
+
+    </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-sm-3" for="distance">Distance(miles)</label>
+        <div class="col-sm-1"></div>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" id="distance" placeholder="10" name="radius">
+      </div>
+    </div>
+     <div class="form-group">
+      <label class="control-label col-sm-3">From</label>
+        <div class="col-sm-1"></div>
+      <div class="col-sm-8">
+         <div class="radio">
+          <label><input type="radio" name="optradio">Current location</label>
+        </div>
+        <div class="radio">
+          <label><input type="radio" name="optradio">Other. please specify:</label>
+        </div>
+        <div class=" col-sm-9"  >
+        <input  id="pac-input" class="form-control" type="text" placeholder="Enter a location" name="location">
+          </div>
+      </div>
+
+    </div>
+
+    <div class="form-group">
+      <div class=" col-sm-offset-2 col-sm-2">
+        <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-search"></span> Search
+    </button> <button type="button" class="btn btn-default">Clear</button>
+
+      </div>
+    </div>
+    <input type="hidden" name="latitude" id="latitude">
+    <input type="hidden" name="longitude" id="longitude">
+  </form>
+</div>
+
+</body>
+</html>

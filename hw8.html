@@ -1,0 +1,828 @@
+<html>
+		<head lang="en">
+			<title>hw8</title>
+		  <meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+			<script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment.min.js"></script>
+			
+			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0mO46_Gm8eZN2-HKbl2JAp27bLKKFV3o&libraries=geometry,places"></script>
+			<link rel="stylesheet" type="text/css" href="http://rateyo.fundoocode.ninja/bower_components/jquery-rateyo/min/jquery.rateyo.min.css" />
+<script src="http://rateyo.fundoocode.ninja/bower_components/jquery-rateyo/min/jquery.rateyo.min.js"></script>
+			<script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+			
+			<style>
+				.invi{
+					display: none;
+				}
+				.invi-det{
+					display: none;
+				}
+				.invi-det2{
+					display: none;
+				}
+				.img-small{
+					width:40;
+				}
+			</style>
+			<script type="text/javascript">
+				var days={
+					"Monday":0,"Tuesday":1,"Wednesday":2,"Thursday":3,"Friday":4,"Saturday":5,"Sunday":6
+				};
+				var lat = 0;
+				var long = 0;
+				var search_lat = 0;
+				var search_long = 0;
+				var user_selected_here=true;
+				var autocomplete;
+				var mflag = 0;
+				var marker,myLatLng;
+				var directionsDisplay = null;
+				var mapLat,mapLng;
+				var directionsDisplay,directionsService;
+				var table;
+            function getLoc() {
+							directionsDisplay = new google.maps.DirectionsRenderer;
+					
+        directionsService = new google.maps.DirectionsService;
+                xmlhttp=new XMLHttpRequest();
+                
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data= JSON.parse(xmlhttp.responseText);
+											lat = data["lat"];
+											long = data["lon"];
+											console.log(lat+" , "+long)
+											
+											var defaultBounds = new google.maps.LatLngBounds(
+											new google.maps.LatLng(lat, long),
+											new google.maps.LatLng(lat, long+2));
+											$("#rad1").val("here+"+lat+","+long);
+										var input = document.getElementById('loc');
+										
+
+											var options = {
+											bounds: defaultBounds
+										};
+											
+										autocomplete = new google.maps.places.Autocomplete(input, options);
+										//autocomplete.addListener('place_changed', getLatLong);
+                    }
+                };
+                xmlhttp.open("GET","http://ip-api.com/json",true); 
+                xmlhttp.send();
+							
+							
+							//$("#rad").val();
+							
+							
+							
+							
+							$("#myform").submit(function(){
+								$("#erase").show();
+								$("#prog").show();
+					$("#rad2").val($("#loc").val());
+								
+								
+								
+								
+								
+								$.ajax({
+									url: "http://127.0.0.1:8081/",
+									type: "get", 
+									datatype: "json",
+									data: $(this).serialize(),
+									error : function(request,error)
+										{
+												alert("Request: "+JSON.stringify(request));
+										},
+									success: function(res){
+										if(res.results.length==0){
+											$("#prog").hide();
+											 $("#head").html("<h3>No Results found<h3>");
+											 }else{
+										
+										if(res['foundLat']){
+											 user_selected_here=false;
+											 search_lat = res['foundLat'];
+											 search_long = res['foundLong'];
+											 }
+										//console.log(res);
+						//X = JSON.parse(res);
+						//console.log(res['next_page_token']);
+						table = "<table class='table'>";
+						if(res['results'].length>0){
+							$(".invi-det").show();
+							table+="<thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</tr></thead>"
+							for(var i= 0; i < res['results'].length; i++){
+								table+="<tr><td>"+(i+1)+"</td><td><img class='img-small' src='"+res['results'][i]['icon']+"'></td>";
+								table+="<td><div>" + res['results'][i]['name'] + "</div></td>";
+								table+="<td><div>" + res['results'][i]['vicinity'] + "</div></td>";
+								table+="<td><button class='btn btn-default'><i class='far fa-star'></i></button></td>";
+								table+="<td><button class='btn btn-default getDet'  value='"+res['results'][i]['place_id']+"'><i class='fas fa-angle-right'></i></button></td>";
+								table+="</tr>"
+							}
+						}
+						table+="</table>";
+						//console.log(table);
+						$("#prog").hide();
+						$("#table").html(table);
+						$(".img-small").attr("width","40");
+						if(res["next_page_token"]){
+							$("#next").show();
+							$("#next").click(function(){
+								$("#next").hide();
+    							
+									
+								
+								
+								
+								
+					/*$.post("http://127.0.0.1:8081",$(this).serialize(),function(res){
+						//use res
+						
+						console.log(res);
+						//X = JSON.parse(res);
+						console.log(res['next_page_token']);
+						var table = "<table class='table'>";
+						if(res['results'].length>0){
+							$(".invi-det").show();
+							table+="<thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</tr></thead>"
+							for(var i= 0; i < res['results'].length; i++){
+								table+="<tr><td>"+(i+1)+"</td><td><img class='img-small' src='"+res['results'][i]['icon']+"'></td>";
+								table+="<td><div>" + res['results'][i]['name'] + "</div></td>";
+								table+="<td><div>" + res['results'][i]['vicinity'] + "</div></td>";
+								table+="<td><button class='btn btn-default'><i class='far fa-star'></i></button></td>";
+								table+="<td><button class='btn btn-default'><i class='fas fa-angle-right'></i></button></td>";
+								table+="</tr>"
+							}
+						}
+						table+="</table>"
+						$("#table").html(table);
+						$(".img-small").attr("width","40");
+						if(res["next_page_token"]){
+							$("#next").show();
+							$("#next").click(function(){
+								$("#next").hide();
+								*/
+								
+								$.ajax({
+									url: "http://127.0.0.1:8081/nextPage",
+									type: "get", 
+									datatype: "json",
+									data:{
+										"token":res["next_page_token"]
+									},
+									success: function(result){
+								var table1 = "<table class='table'>";
+						if(result['results'].length>0){
+							table1+="<thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</tr></thead>"
+							for(var i= 0; i < result['results'].length; i++){
+								table1+="<tr><td>"+(i+21)+"</td><td><img class='img-small' src='"+result['results'][i]['icon']+"'></td>";
+								table1+="<td><div>" + result['results'][i]['name'] + "</div></td>";
+								table1+="<td><div>" + result['results'][i]['vicinity'] + "</div></td>";
+								table1+="<td><button class='btn btn-default'><i class='far fa-star'></i></button></td>";
+								table1+="<td><button class='btn btn-default getDet' value='"+result['results'][i]['place_id']+"'><i class='fas fa-angle-right'></i></button></td>";
+								table1+="</tr>"
+							}
+						}
+						table1+="</table>";
+						$("#table").html("");
+						$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);$("#table").html(table1);
+						$(".img-small").attr("width","40");
+									
+								$("#prev").show();
+    							}});
+									});
+								}
+								//return false;
+								
+								
+								
+							/*	$.post("http://127.0.0.1:8081/nextPage",res["next_page_token"],function(res){
+								console.log(res);
+								var table1 = "<table class='table'>";
+						if(res['results'].length>0){
+							table1+="<thead><tr><th>#</th><th>Category</th><th>Name</th><th>Address</th><th>Favorite</th><th>Details</tr></thead>"
+							for(var i= 0; i < res['results'].length; i++){
+								table1+="<tr><td>"+(i+21)+"</td><td><img class='img-small' src='"+res['results'][i]['icon']+"'></td>";
+								table1+="<td><div>" + res['results'][i]['name'] + "</div></td>";
+								table1+="<td><div>" + res['results'][i]['vicinity'] + "</div></td>";
+								table1+="<td><button class='btn btn-default'><i class='far fa-star'></i></button></td>";
+								table1+="<td><button class='btn btn-default'><i class='fas fa-angle-right'></i></button></td>";
+								table1+="</tr>"
+							}
+						}
+						table1+="</table>"
+						console.log(table1);
+						$("#table").html("");
+						$("#table").html(table1);
+						$(".img-small").attr("width","40");
+									
+								$("#prev").show();
+							})*/
+								
+							$("#prev").click(function(){
+								$("#prev").hide();
+								$("#table").html(table);
+								$("#next").show();
+							});
+							//console.log(res["next_page_token"]);
+						 		/**/
+										
+									}
+						}
+								});
+						$("#table").on('click','.getDet',function(){
+							//bambam
+							$("#list").show();
+							$("#det").hide();
+							var ululu = "<div><button class='btn btn-default'><i class='far fa-star'></i></button><button id='twit_click' class='btn'><img width='35' height='30' src ='http://cs-server.usc.edu:45678/hw/hw8/images/Twitter.png'></button></div>"
+							$("#twit").html(ululu);
+					//console.log(123);
+							$("#next").hide();
+							$("#prev").hide();
+							
+							var service = new google.maps.places.PlacesService($('#dummy').get(0));
+							
+							service.getDetails({
+          placeId: $(this).val()
+        }, function(place, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {   
+						$("#head").html("<h3 class='text-center'>"+place.name+"</h3>");
+						var flag = 0;
+						var flag1 = 0;
+						console.log(place);
+              //var position= place.geometry.location;
+						var temp = "<table class='table table-striped'>";
+						if(place.formatted_address){
+							temp += "<tr><td class='col-sm-4'><b>Address</b></td><td class='col-sm-8'>"+place.formatted_address+"</td></tr>"
+							
+						}
+						if(place.international_phone_number){
+							temp += "<tr><td class='col-sm-4'><b>Phone Number</b></td><td class='col-sm-8'>"+place.international_phone_number+"</td></tr>";
+						}
+						if(place.price_level){
+							var j = "";
+							for(var k = 0; k < parseInt(place.price_level); k++){
+								j+="$";
+							}
+							temp += "<tr><td class='col-sm-4'><b>Price Level</b></td><td class='col-sm-8'>"+j+"</td></tr>";
+						}
+						if(place.rating){
+							flag=1;
+							temp += "<tr><td class='col-sm-4'><b>Rating</b></td><td><div><div class='col-sm-1' id='ratin'>"+place.rating+"</div><div class='col-sm-5'id='star'></div></div></td></tr>";
+						}
+						if(place.url){
+							temp += "<tr><td class='col-sm-4'><b>Google Page</b></td><td class='col-sm-8'><a target='_blank' href='"+place.url+"'>"+place.url+"</a></td></tr>";
+						}
+						if(place.website){
+							temp += "<tr><td class='col-sm-4'><b>Website</b></td><td class='col-sm-8'><a target='_blank' href='"+place.website+"'>"+place.website+"</a></td></tr>";
+						}
+						if(place.opening_hours){
+							flag1=1;
+							temp += "<tr><td><div class='col-sm-4'><b>Hours</b></div></td><td><div><span id='open_close'></span><button class='btn btn-link' data-toggle='modal' data-target='#myModal' id='open_alert'>Daily open hours</button></div></td></tr>"	
+						}
+						$("#table").hide();
+						$("#det-clicked").show();
+						$("#details").html(temp);
+						if(flag==1){
+							//console.log(123);
+							var ratin = parseFloat(place.rating);
+							$("#star").rateYo({
+								rating: ratin,
+								starWidth: "20px",
+								readOnly: true
+							});
+							flag=0;
+						}
+						
+						
+						$("#twit_click").click(function(){
+							console.log("got here tweet");
+							var url = "https://twitter.com/intent/tweet?text=Check out "+place.name +" located at "+ place.formatted_address +" .Website: "+place.url+"%20%23TravelAndEntertainmentSearch";
+							var w = 500;
+							var h = 500;
+							var left = (screen.width/2)-(w/2);
+  						var top = (screen.height/2)-(h/2);
+  						window.open(url, "Share a link on twitter", 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+							
+						});
+						
+						$("#open_alert").click(function(){
+							var day = moment().utcOffset(place.utc_offset).format('dddd');
+							var day_index = days[day];
+							var tab = "<table class='table'>";
+							var fin, ind;
+							for(var gogogo = 0; gogogo < 7; gogogo++){
+								fin = place.opening_hours.weekday_text[(day_index+gogogo)%7];
+								ind = fin.indexOf(":");
+								if(gogogo == 0){
+									tab+="<tr><td><b>"+fin.substring(0,ind)+"</b></td><td><b>"+fin.substring(ind+1,fin.length)+"</b></td></tr>";
+								}
+								else{
+									tab+="<tr><td>"+fin.substring(0,ind)+"</td><td>"+fin.substring(ind+1,fin.length)+"</td></tr>";	
+								}
+								
+								//console.log(fin.substring(0,ind));
+								//console.log(fin.substring(ind+1,fin.length));
+								
+								
+							}
+							tab+="</table>";
+							//console.log(tab);
+							$("#mod-bod").html(tab);
+							
+						});
+						
+						if(flag1==1){
+							if(place.open_now){
+								var day = moment().utcOffset(place.utc_offset).format('dddd');
+								var crap = (place.opening_hours.weekday_text[days[day]]);
+								$("#open_close").html("Open now: "+crap.substring(day.length+2,crap.length));
+							}else{
+								$("#open_close").html("Closed");
+							}
+							flag1=0;
+						}
+						//console.log(123);
+						//console.log(place);
+						//if(place.)
+						
+						
+						//print here
+						//
+						
+						if(place.photos){
+							var yoyoyo = "";
+							for(var asdf = 0; asdf < place.photos.length; asdf++){
+								//console.log();
+								yoyoyo+="<span><a target='_blank' href='"+place.photos[asdf].getUrl({'maxWidth': place.photos[asdf].width, 'maxHeight': place.photos[asdf].height})+"'><img class='img-thumbnail img-responsive' width='300' height='300' src='"+place.photos[asdf].getUrl({'maxWidth': place.photos[asdf].width, 'maxHeight': place.photos[asdf].height})+"'></img></a></span>"
+							}
+							$("#photos").html(yoyoyo);
+						}
+						
+						
+						//starts
+						//console.log(user_selected_here);
+						if(user_selected_here){
+							$("#fill").val('Your location');
+							
+						}else{
+							$("#fill").val($("#loc").val());
+						}
+						$("#to").val(place.name + ", " + place.formatted_address);
+						//driving,bicycling, transit, walking
+						//!!!!!!!!!!!!!!!!!!!!!add </div>
+						
+						var defaultBounds1 = new google.maps.LatLngBounds(
+											new google.maps.LatLng(lat, long),
+											new google.maps.LatLng(lat, long+2));
+										var input1 = document.getElementById('fill');
+										
+
+											var options1 = {
+											bounds: defaultBounds1
+										};
+											
+						
+						
+						autocomplete = new google.maps.places.Autocomplete(input1, options1);
+						
+						//console.log(place.geometry.location.lat());
+						var mapLat = place.geometry.location.lat();
+						var mapLng = place.geometry.location.lng();
+						myLatLng = {lat: mapLat, lng: mapLng};
+						var map = new google.maps.Map(document.getElementById('mapHere'), {
+							zoom: 14,
+							center: myLatLng
+						});
+						marker = new google.maps.Marker({
+							position: myLatLng,
+							map: map,
+							title: 'Hello World!'
+						});
+						marker.setMap(map);
+						//ends
+						
+						
+						if(place.reviews){
+							var print_company = "<div>";
+									var len1 = Math.min(place.reviews.length,5);
+									if(len1 == 0){
+                                print_company+="<b>No Reviews Found</b>";
+                            }else{
+                                for(var k = 0; k < len1; k++){
+                                    var dateTimeString = moment.unix(place.reviews[k]['time']).format("YYYY-MM-DD HH:mm:ss");
+																	  print_company+="<div class='row well'><a target='_blank' href='"+ place.reviews[k]["profile_photo_url"] +"'><img style='float:left' src='" + place.reviews[k]["profile_photo_url"] + "'></a><a target='_blank' href='"+ place.reviews[k]['author_url'] +"'>" + place.reviews[k]["author_name"] + "</a><p>"+dateTimeString+"</p><p>" + place.reviews[k]["text"] + "</p></div>";
+                                }
+                            }
+                            print_company+= "</div>";
+								console.log(print_company);
+                $("#printCompany").html(print_company);
+							
+							
+							}
+						
+						$('#comp1').click(function(){
+							console.log(123);
+							//printCompany
+							var print_company = "<div>";
+							if(place.reviews){
+								
+								
+								
+									var len1 = Math.min(place.reviews.length,5);
+									if(len1 == 0){
+                                print_company+="<b>No Reviews Found</b>";
+                            }else{
+                                for(var k = 0; k < len1; k++){
+																	var dateTimeString = moment.unix(place.reviews[k]['time']).format("YYYY-MM-DD HH:mm:ss");
+																	  print_company+="<div class='row well'><a target='_blank' href='"+ place.reviews[k]["profile_photo_url"] +"'><img style='float:left' src='" + place.reviews[k]["profile_photo_url"] + "'></a><a target='_blank' href='"+ place.reviews[k]['author_url'] +"'>" + place.reviews[k]["author_name"] + "</a><p>"+dateTimeString+"</p><p>" + place.reviews[k]["text"] + "</p></div>";
+                                }
+                            }
+                            print_company+= "</div>";
+								console.log(print_company);
+                $("#printCompany").html(print_company);            
+							}
+							
+						});
+						
+						$('#comp2').click(function(){
+							console.log(234);
+							
+							
+							
+							$.ajax({
+									url: "http://127.0.0.1:8081/getYelp",
+									type: "get", 
+									datatype: "json",
+									data:{
+										"name": place.name,
+										"lat": place.geometry.location.lat(),
+										"long": place.geometry.location.lng()
+									},
+									success: function(result){
+										console.log(result);
+										
+										var print_company = "<div>";
+							if(result.reviews){
+									var len1 = Math.min(result.reviews.length,5);
+									if(len1 == 0){
+                                print_company+="<b>No Reviews Found</b>";
+                            }else{
+                                for(var k = 0; k < len1; k++){
+                                    print_company+="<div class='row well'><a target='_blank' href='"+ result.reviews[k]["user"]["image_url"] +"'><img class='img-circle' style='float:left;width:100;height:100' src='" + result.reviews[k]["user"]["image_url"] + "'></a><b>" + result.reviews[k]["user"]["name"] + "</b><p>"+result.reviews[k]["time_created"]+"</p><p>" + result.reviews[k]["text"] + "</p></div>";
+                                }
+                            }
+                            print_company+= "</div>";
+								console.log(print_company);
+                $("#printCompany").html(print_company);            
+							}
+										
+									}
+						});
+							
+							
+						});
+						//addEventListener('change', onChangeHandler1);
+        	//	document.getElementById('order').addEventListener('change', onChangeHandler2);
+						
+						
+						
+				}
+							}
+							);
+							$("#list").click(function(){
+								//console.log(table);
+								$("#table").show();
+								$("#table").html(table);
+								$("#head").hide();
+								$("#det-clicked").hide();
+							});
+						});
+								
+								return false;
+            });
+				
+				/*function getLatLong(){
+					var place = autocomplete.getPlace();
+					lat2=place["geometry"]["location"]["lat"]();
+					long2=place["geometry"]["location"]["lng"]()
+					//console.log(lat2 + " , "+ long2);
+				}*/
+							//gogogo
+				
+							$("#resetForm").click(function(){
+								$("#erase").hide();
+				});
+							
+							//abcd
+							
+							
+							
+						}
+				
+				
+				var someLat, someLong, someLatLong;
+				function getDirections(){
+					
+					
+				if(($("#fill").val()=="My location") || $("#fill").val()=="Your location"){
+					someLat = lat;
+					someLong = long;
+					someLatLong = {lat: someLat, lng: someLong};
+						 
+				}
+					else if(!user_selected_here && $("#fill").val()==$("#loc").val()){
+						//console.log($("#fill").val());
+						//console.log($("#dist").val());
+						
+						someLatLong = {lat: search_lat, lng: search_long};
+						//console.log("call .ajax here");
+						//
+					}
+					else{
+						$.ajax({
+									url: "http://127.0.0.1:8081/getLatLong",
+									type: "get", 
+									datatype: "string",
+									data:{
+										"token": $("#fill").val()
+									},
+									success: function(result){
+										var bangbang = result.split(",");
+										var one = parseFloat(bangbang[0]);
+										var two = parseFloat(bangbang[1]);
+										someLatLong = {lat: one, lng: two};
+									},
+									async: false
+						});
+					}
+					
+					
+					
+					
+        var map = new google.maps.Map(document.getElementById('mapHere'), {
+          zoom: 14,
+          center: myLatLng
+        });
+        directionsDisplay.setMap(map);
+					directionsDisplay.setPanel(null);
+				directionsDisplay.setPanel(document.getElementById('dirHere'));
+					
+        calculateAndDisplayRoute(directionsService, directionsDisplay);
+        document.getElementById('mode').addEventListener('change', function() {
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+        });
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+				
+        var selectedMode = document.getElementById('mode').value;
+        directionsService.route({
+          origin: someLatLong,  // Haight.
+          destination: myLatLng,  // Ocean Beach.
+          // Note that Javascript allows us to access the constant
+          // using square brackets and a string value as its
+          // "property."
+					provideRouteAlternatives: true,
+          travelMode: google.maps.TravelMode[selectedMode]
+        }, function(response, status) {
+          if (status == 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+				
+				
+				
+					
+				}
+				
+				
+			
+    </script>
+		
+			<script>
+				function initMap(){
+					mflag = 1;
+				}
+				
+				
+				
+			</script>
+			
+	</head>
+		<body class="container" onload="getLoc()">
+			<form id="myform" class="well clearfix form-horizontal">
+				<h3 class="text-center">Travel and Entertainment Search</h3>
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="key">Keyword*</label>
+					<div class="col-sm-8">
+						<input id="key" name="key" type="text" class="form-control" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="cat">Category</label>
+					<div class="col-sm-5">
+						<select name="cat" class="form-control">
+							<option value="default" default>Default</option>
+              <option value="airport">Airport</option>
+              <option value="amusement_park">Amusement Park</option>
+              <option value="aquarium">Aquarium</option>
+              <option value="art_gallery">Art Gallery</option>
+              <option value="bakery">Bakery</option>
+              <option value="bar">Bar</option>
+              <option value="beauty_salon">Beauty Salon</option>
+              <option value="bowling_alley">Bowling Alley</option>
+              <option value="bus_station">Bus Station</option>
+              <option value="cafe">Cafe</option>
+              <option value="campground">Campground</option>
+              <option value="car_rental">Car Rental</option>
+              <option value="casino">Casino</option>
+              <option value="lodging">Lodging</option>
+              <option value="movie_theater">Movie Theatre</option>
+              <option value="museum">Museum</option>
+              <option value="night_club">Night Club</option>
+              <option value="park">Park</option>
+              <option value="parking">Parking</option>
+              <option value="restaurant">Restaurant</option>
+              <option value="shopping_mall">Shopping Mall</option>
+              <option value="stadium">Stadium</option>
+              <option value="subway_station">Subway Station</option>
+              <option value="taxi_stand">Taxi Stand</option>
+              <option value="train_station">Train Station</option>
+              <option value="transit_station">Transit Station</option>
+              <option value="travel_agency">Travel Agency</option>
+              <option value="zoo">Zoo</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="dist" class="control-label col-sm-2">Distance (miles)</label>
+					<div class="col-sm-2">
+						<input id="rad" name="rad" class="form-control" type="number" placeholder="10" value="10">
+					</div>
+				</div>
+				<div class="form-group">
+					<div>
+						<label class="control-label col-sm-2">From*</label>
+						<div class="radio col-sm-10">
+							<label><input id="rad1" name="dist" type="radio" checked>Current Location</label>
+						</div>
+					</div>	  
+					<div>
+						<div class="col-sm-2"></div>
+						<div class="radio col-sm-10">
+							<label><input id="rad2" name="dist" type="radio">Other. Please specify:</label>
+						</div>
+					</div>
+					<div class="col-sm-2"></div>
+					<div class="col-sm-8">
+						<div class="col-sm-7">
+							<div class="col-sm-8">
+							<input id="loc" class="form-control" type="text" placeholder="Enter a location" disabled required>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-4">
+					<button type="submit" class="btn btn-primary">
+						<span class="glyphicon glyphicon-search"></span>
+						Search
+					</button>
+					<input id='resetForm' type="reset" class="btn" value="Clear">
+				</div>
+				
+				
+			</form>
+			<div id="erase">
+			<div class="col-sm-5"></div>
+			<button class="btn btn-primary">Results</button>
+			<button class="btn btn-link">Favorites</button>
+			<div class="row">
+				<div class="col-sm-1">
+				<button id="list" class="btn btn-default invi-det2"><span class="glyphicon glyphicon-chevron-left"></span>List</button>
+			
+				</div>
+				<div class="col-sm-9"></div>
+				<div id='twit'></div>
+				<div class="col-sm-1">
+					<button id="det" class="btn btn-default invi-det" disabled>Details<span class="glyphicon glyphicon-chevron-right"></span></button>
+				</div>
+			</div>
+			<div id="table"></div>
+			<div id="head"></div>
+			<div id="det-clicked" class="invi">
+				<div class="col-sm-7"></div>
+				<ul class="nav nav-tabs">
+					<li class="active"><a data-toggle="tab" href="#details">Info</a></li>
+					<li><a data-toggle="tab" href="#photos">Photos</a></li>
+					<li><a data-toggle="tab" href="#map">Map</a></li>
+					<li><a data-toggle="tab" href="#Reviews">Reviews</a></li>
+				</ul>
+				<div class="tab-content">
+					<div id="details" class="tab-pane in active"></div>
+					<div id="photos" class="tab-pane"></div>
+					<div id="map" class="tab-pane">
+						<div class='row'>
+							<div class='col-sm-4'>From</div>
+							<div class='col-sm-4'>To</div>
+							<div class='col-sm-3'>Travel mode</div>
+						</div>
+						<div class='row'>
+							<div class='col-sm-4'>
+								<input id='fill' type='text'>
+							</div>
+							<div class='col-sm-4'>
+								<input id='to' readonly>
+							</div>
+							<div class='col-sm-3'>
+								<select id='mode'>
+									<option value='DRIVING'>Driving</option>
+									<option value='BICYCLING'>Bicycling</option>
+									<option value='TRANSIT'>Transit</option>
+									<option value='WALKING'>Walking</option>
+								</select>
+							</div>
+							<div class='col-sm-1'>
+								<button id='getDir' class='btn btn-primary' onclick="getDirections()">Get Directions</button>
+							</div>
+						</div>
+						<div class="row">
+							<div id='mapHere' class='mw-100' style="height: 350px"></div>
+						</div>
+						<div class="row">
+							<div id='dirHere' class='mw-100' style="height: 350px"></div>
+						</div>
+					</div>
+					<div id="Reviews" class="tab-pane row">
+						<div class="row">
+						<div class="dropdown col-sm-3">
+							<button id='company' class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Google Reviews<span class="caret"></span></button>
+							<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+								<li  id='comp1' role="presentation"><a  role="menuitem" tabindex="-1">Google Reviews</a></li>
+								<li  id='comp2' role="presentation"><a role="menuitem" tabindex="-1">Yelp Reviews</a></li>
+							</ul>
+							</div>
+							<div class="dropdown col-sm-3">
+							<button id="order" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Default Order<span class="caret"></span></button>
+							<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+								<li role="presentation"><a role="menuitem" tabindex="-1">Default Order</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1">Highest Rating</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1">Lowest Rating</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1">Most Recent</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1">Least Recent</a></li>
+							</ul>
+						</div>
+								</div>
+						<div class='col-sm-12' id='printCompany'></div>
+				</div>
+			</div>
+			</div>
+			<div id="prog" class="progress invi">
+				<div class="progress-bar progress-bar-striped active" style="width:50%"></div>
+			</div>
+			<div class="row">
+				<div class="col-sm-5"></div>
+					<div>
+					<button id="prev" class="btn btn-default invi">Previous</button>
+					<button id="next" class="btn btn-default invi">Next</button>
+				</div>
+			</div>
+			<div id="dummy"></div>
+			<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Open hours</h4>
+        </div>
+        <div id="mod-bod" class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+				</div>
+    </div>
+			</div>
+		</body>
+	<script>
+				$("#rad1").on("click", function(){
+					$("#loc").attr("disabled", true);
+				});
+				
+				$("#rad2").on("click", function(){
+					$("#loc").attr("disabled", false);
+				});
+	</script>
+	
+</html>
