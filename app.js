@@ -18,7 +18,7 @@ app.get('/getYelp',function(req,res){
   var options = {
   url: nextpageURL,
   headers: {
-    Authorization:"Bearer wfwPPgfOs1U8jCq4z8C-buXWw1BY-5uQxsoHDB69TWRkL8PmCzItj2Xz2CXZpjNk1xhPzW0cPbBVKc1v_odHaQmtrqNEpfUkkq3iTN5bXX8EgtH8lVqu3so8ev3PWnYx"
+    Authorization:"Bearer *******"
   }
 };
 
@@ -32,7 +32,7 @@ function callback(error, response, body) {
     var options2 = {
     url: nextpageURL2,
     headers: {
-      Authorization:"Bearer wfwPPgfOs1U8jCq4z8C-buXWw1BY-5uQxsoHDB69TWRkL8PmCzItj2Xz2CXZpjNk1xhPzW0cPbBVKc1v_odHaQmtrqNEpfUkkq3iTN5bXX8EgtH8lVqu3so8ev3PWnYx"
+      Authorization:"Bearer ******"
     }
   };
 
@@ -60,7 +60,7 @@ request(options, callback);
 
 app.get('/nextPage',function(req,res){
   var nextpageid = req.query.token;
-  var nextpageURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" + nextpageid + "&key=AIzaSyB0mO46_Gm8eZN2-HKbl2JAp27bLKKFV3o";
+  var nextpageURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" + nextpageid + "&key=*****";
   console.log(nextpageURL);
   request(nextpageURL, function (error, response, body) {
     var nextdata = JSON.parse(body);
@@ -75,7 +75,7 @@ app.get('/nextPage',function(req,res){
 app.get('/getLatLong',function(req,res){
   var url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
   url+= req.query.token.split(" ").join("+");
-  url+="&key=AIzaSyB0mO46_Gm8eZN2-HKbl2JAp27bLKKFV3o";
+  url+="&key=*****";
   //console.log(url);
 
   request(url, function (error, response, body) {
@@ -102,7 +102,7 @@ app.get('/', function(req, res){
     rad_fl = parseFloat(req.query.rad) * 1609.34;
     mURL+="&radius=" + rad_fl.toString();
     mURL+="&type=" + req.query.cat;
-    mURL+= "&keyword=" + req.query.key.split(" ").join("+") + "&key=AIzaSyB0mO46_Gm8eZN2-HKbl2JAp27bLKKFV3o";
+    mURL+= "&keyword=" + req.query.key.split(" ").join("+") + "&key=*****";
     console.log(mURL);
     request(mURL, function (error, response, body) {
       data = JSON.parse(body);
@@ -117,7 +117,7 @@ app.get('/', function(req, res){
   }else{
     var url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     url+= req.query.dist.split(" ").join("+");
-    url+="&key=AIzaSyB0mO46_Gm8eZN2-HKbl2JAp27bLKKFV3o";
+    url+="&key=*****";
     //console.log(url);
 
 request(url, function (error, response, body) {
@@ -131,7 +131,7 @@ request(url, function (error, response, body) {
   rad_fl = parseFloat(req.query.rad) * 1609.34;
   mURL+="&radius=" + rad_fl.toString();
   mURL+="&type=" + req.query.cat;
-  mURL+= "&keyword=" + req.query.key.split(" ").join("+") + "&key=AIzaSyB0mO46_Gm8eZN2-HKbl2JAp27bLKKFV3o";
+  mURL+= "&keyword=" + req.query.key.split(" ").join("+") + "&key=*****";
   console.log(mURL);
   request(mURL, function (error, response, body) {
     data = JSON.parse(body);
